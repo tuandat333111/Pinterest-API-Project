@@ -1,9 +1,9 @@
 const {PrismaClient}=require('@prisma/client');
-const prisma=new PrismaClient(); 
+const prisma=new PrismaClient();
 const bcrypt = require('bcrypt');
 const { generateToken } = require('../Utils/jwt');
 const { successCode,errorCode,failCode } = require('../Utils/response');
-
+  
 const loginUser = async (req, res) => {    
     let { email, pass_word } = req.body;
     let checkUser = await prisma.user.findFirst({
@@ -36,36 +36,36 @@ const loginUser = async (req, res) => {
     }
 }
 
-const signUpUser = async (req, res) => {
-    try {
-        let { full_name, email, pass_word, age } = req.body;
+// const signUpUser = async (req, res) => {
+//     try {
+//         let { full_name, email, pass_word, age } = req.body;
         
-        let newData = {
-            full_name,
-            email,
-            pass_word: bcrypt.hashSync(pass_word, 10),
-            age,
+//         let newData = {
+//             full_name,
+//             email,
+//             pass_word: bcrypt.hashSync(pass_word, 10),
+//             age,
             
-        }
+//         }
         
-        let checkEmail = await prisma.user.findFirst({
-            where: {
-                email
-            }
-        })
+//         let checkEmail = await prisma.user.findFirst({
+//             where: {
+//                 email
+//             }
+//         })
 
-        if (checkEmail) {
-            failCode(res, "Email already existed", "");
-            return;
-        }       
-        await prisma.user.create(newData);        
-        successCode(res, "Sign up successfully", "");
+//         if (checkEmail) {
+//             failCode(res, "Email already existed", "");
+//             return;
+//         }       
+//         await prisma.user.create(newData);        
+//         successCode(res, "Sign up successfully", "");
 
-    } catch (err) {        
-        errorCode(res, "BE error");
+//     } catch (err) {        
+//         errorCode(res, "BE error");
 
-    }
-}
+//     }
+// }  
 module.exports={
     loginUser,
     signUpUser,
