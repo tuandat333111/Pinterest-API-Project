@@ -6,7 +6,7 @@ const generateToken = (data) => {
 
     // data: string, number, object, buffer => ko có tham số thứ 3, nếu có thì ko dc truyền string
 
-    let token = jwt.sign(data, "pinterest-api", { algorithm: "HS256", expiresIn: "5m" });
+    let token = jwt.sign(data, "pinterest-api", { algorithm: "HS256", expiresIn: "30m" });
 
     return token;
 }
@@ -25,21 +25,26 @@ const decodeToken = (token) => {
 const privateAPI = (req, res, next) => {
 
     let { refreshToken } = req.params;
+    let { token } = req.headers;
     try {
-        // kiểm tra token
-        let { token } = req.headers;
-
+        // kiểm tra token        
         checkToken(token);
         next();
-    } catch (err) {
+    } 
+    catch (err) {
 
         if (err.name == "TokenExpiredError" && refreshToken == true) {
-            let token = generateToken(checkUser.dataValues);
-            successCode(res, token, "");
-        } else {
+            let decoded=checkToken(accessToken);
+            if(decoded){
+                const {email,pass_word,full_name,age}=decoded;
+                const newdata={email,pass_word,full_name,age}
+                const newToken=jwt.sign(newdata, "pinterest-api", { algorithm: "HS256", expiresIn: "30m" });
+                successCode(res,"Token is renewed", newToken);
+            }            
+        } 
+        else {
             res.status(401).send(err.message);
         }
-
     }
 
 }

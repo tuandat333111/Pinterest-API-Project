@@ -11,7 +11,7 @@ model comment {
   comment_id      Int       @id @default(autoincrement())
   user_id         Int?
   image_id        Int?
-  comment_date    DateTime? @db.Date
+  comment_date    DateTime? @default(now()) @db.DateTime(0)
   comment_content String?   @db.VarChar(1000)
   user            user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "comment_ibfk_1")
   image           image?    @relation(fields: [image_id], references: [image_id], onDelete: NoAction, onUpdate: NoAction, map: "comment_ibfk_2")
@@ -23,8 +23,8 @@ model comment {
 model image {
   image_id    Int       @id @default(autoincrement())
   image_name  String?   @db.VarChar(50)
-  path        String?   @db.VarChar(50)
-  description String?   @db.VarChar(50)
+  path        String?   @db.VarChar(1000)
+  description String?   @db.VarChar(1000)
   user_id     Int?
   comment     comment[]
   user        user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "image_ibfk_1")
@@ -36,7 +36,7 @@ model image {
 model save {
   user_id   Int
   image_id  Int
-  save_date DateTime? @db.Date
+  save_date DateTime? @default(now()) @db.DateTime(0)
   user      user      @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "save_ibfk_1")
   image     image     @relation(fields: [image_id], references: [image_id], onDelete: NoAction, onUpdate: NoAction, map: "save_ibfk_2")
 
@@ -47,7 +47,7 @@ model save {
 model user {
   user_id   Int       @id @default(autoincrement())
   email     String?   @db.VarChar(50)
-  pass_word String?   @db.VarChar(50)
+  pass_word String?   @db.VarChar(100)
   full_name String?   @db.VarChar(50)
   age       Int?
   avatar    String?   @db.VarChar(50)
